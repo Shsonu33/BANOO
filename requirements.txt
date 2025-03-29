@@ -1,4 +1,4 @@
+instabot
 openai
-requests
 python-dotenv
-instagrapi
+requests
