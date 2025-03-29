@@ -1,5 +1,4 @@
 instabot
-openai
 python-dotenv
-requests
-imgldr
+openai requests
+
