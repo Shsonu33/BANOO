@@ -1,2 +1,5 @@
-instabot python-dotenv openai requests
+git+https://github.com/instagrambot/instabot.git
+python-dotenv
+openai
+requests
 
