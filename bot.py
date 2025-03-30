@@ -1,34 +1,35 @@
-import os
-from instabot import Bot
-from dotenv import load_dotenv
+name: Run Python Script
 
-# Load environment variables from .env file
-load_dotenv()
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 * * * *'
 
-USERNAME = os.getenv("INSTAGRAM_USERNAME")
-PASSWORD = os.getenv("INSTAGRAM_PASSWORD")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+jobs:
+  run-python:
+    runs-on: ubuntu-latest
 
-# Ensure credentials are set
-if not USERNAME or not PASSWORD:
-    raise ValueError("Instagram username or password is missing. Please set them in the .env file.")
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-if not OPENAI_API_KEY:
-    raise ValueError("OpenAI API Key is missing. Please set it in the .env file.")
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
 
-# Initialize bot and login
-bot = Bot()
-bot.login(username=USERNAME, password=PASSWORD)
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-# Example: Upload a photo
-PHOTO_PATH = "test.jpg"
-CAPTION = "This is an automated post. #bot"
+      - name: Set Environment Variables
+        run: |
+          echo "INSTAGRAM_USERNAME=${{ secrets.INSTAGRAM_USERNAME }}" >> $GITHUB_ENV
+          echo "INSTAGRAM_PASSWORD=${{ secrets.INSTAGRAM_PASSWORD }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
-if os.path.exists(PHOTO_PATH):
-    bot.upload_photo(PHOTO_PATH, caption=CAPTION)
-    print("Photo uploaded successfully!")
-else:
-    print(f"Photo file {PHOTO_PATH} not found.")
-
-# Logout
-bot.logout()
+      - name: Run Python Script
+        run: python bot.py
