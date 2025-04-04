@@ -1,4 +1,0 @@
-git+https://github.com/instagrambot/instabot.git
-python-dotenv
-openai
-requests
